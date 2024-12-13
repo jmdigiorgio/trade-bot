@@ -1,37 +1,24 @@
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { PortfolioOverview } from '@/features/dashboard/components/PortfolioOverview';
 
 export default function Home() {
+  // Mock data for development
+  const mockMetrics = {
+    paperBalance: 10567.89,
+    dailyPnL: 234.56,
+    totalPnL: 1567.89,
+    winRate: 0.67
+  };
+
   return (
-    <main className="container mx-auto p-8">
-      <h1 className="mb-8 text-4xl font-bold">Custom Components Demo</h1>
-      
-      <div className="grid gap-8">
-        {/* Button Examples */}
-        <Card title="Button Variants">
-          <div className="flex flex-wrap gap-4">
-            <Button>Primary Button</Button>
-            <Button variant="secondary">Secondary Button</Button>
-            <Button variant="outline">Outline Button</Button>
-          </div>
-        </Card>
-
-        {/* Button Sizes */}
-        <Card title="Button Sizes">
-          <div className="flex flex-wrap items-center gap-4">
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
-          </div>
-        </Card>
-
-        {/* Card Example */}
-        <Card title="Nested Card Example">
-          <p className="mb-4 text-gray-600">
-            This is a card component that can contain any content, including other components.
-          </p>
-          <Button variant="secondary">Action Button</Button>
-        </Card>
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="container mx-auto px-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+          Trading Bot Dashboard
+        </h1>
+        <div className="grid gap-6">
+          <PortfolioOverview metrics={mockMetrics} />
+          {/* More components will go here */}
+        </div>
       </div>
     </main>
   );
