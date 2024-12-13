@@ -1,18 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --foreground: #171717;
-  --background: #f9fafb;
-}
-
-[data-theme='dark'] {
-  --foreground: #f9fafb;
-  --background: #171717;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-}

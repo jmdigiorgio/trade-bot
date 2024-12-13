@@ -7,15 +7,22 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/features/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       fontFamily: {
         sans: ['var(--font-inter)'],
+        mono: ['var(--font-fira-code)'],
       },
-      colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
+      fontSize: {
+        // For numbers and stats
+        'stat': ['2.5rem', { lineHeight: '1.2', fontWeight: '600' }],
+        'number-lg': ['2rem', { lineHeight: '1.2', fontWeight: '500' }],
+        'number': ['1.5rem', { lineHeight: '1.2', fontWeight: '500' }],
+        // For regular text
+        'body-lg': ['1.125rem', { lineHeight: '1.5' }],
+        'body': ['1rem', { lineHeight: '1.5' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }],
+        'tiny': ['0.75rem', { lineHeight: '1.5' }],
       },
     },
   },
