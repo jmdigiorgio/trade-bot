@@ -77,6 +77,7 @@ function getHoldingDuration(since: string): string {
 export default function Home() {
   const [sortField, setSortField] = useState<SortField>('holdingSince');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [isHoldingsExpanded, setIsHoldingsExpanded] = useState(true);
 
   // Calculate total invested capital
   const investedCapital = holdings.reduce((total, holding) => {
@@ -308,210 +309,144 @@ export default function Home() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-          </div>
-        </section>
 
-        {/* Holdings Section */}
-        <section className="space-y-6">
-          <Text size="body-lg" className="font-semibold text-emerald-400">Current Holdings</Text>
-          
-          <div className="bg-zinc-900 rounded-xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="py-3 px-4 text-left">
-                      <button 
-                        onClick={() => handleSort('symbol')}
-                        className="flex items-center hover:text-emerald-400 transition-colors"
-                      >
-                        <Text size="tiny" color="muted" className="uppercase font-semibold">Symbol</Text>
-                        <SortIcon field="symbol" />
-                      </button>
-                    </th>
-                    <th className="py-3 px-4 text-left">
-                      <button 
-                        onClick={() => handleSort('shares')}
-                        className="flex items-center hover:text-emerald-400 transition-colors"
-                      >
-                        <Text size="tiny" color="muted" className="uppercase font-semibold">Position</Text>
-                        <SortIcon field="shares" />
-                      </button>
-                    </th>
-                    <th className="py-3 px-4 text-right">
-                      <button 
-                        onClick={() => handleSort('entryPrice')}
-                        className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
-                      >
-                        <Text size="tiny" color="muted" className="uppercase font-semibold">Entry</Text>
-                        <SortIcon field="entryPrice" />
-                      </button>
-                    </th>
-                    <th className="py-3 px-4 text-right">
-                      <button 
-                        onClick={() => handleSort('currentPrice')}
-                        className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
-                      >
-                        <Text size="tiny" color="muted" className="uppercase font-semibold">Current</Text>
-                        <SortIcon field="currentPrice" />
-                      </button>
-                    </th>
-                    <th className="py-3 px-4 text-right">
-                      <Text size="tiny" color="muted" className="uppercase font-semibold">Target</Text>
-                    </th>
-                    <th className="py-3 px-4 text-right">
-                      <Text size="tiny" color="muted" className="uppercase font-semibold">Stop</Text>
-                    </th>
-                    <th className="py-3 px-4 text-right">
-                      <button 
-                        onClick={() => handleSort('pnl')}
-                        className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
-                      >
-                        <Text size="tiny" color="muted" className="uppercase font-semibold">P&L</Text>
-                        <SortIcon field="pnl" />
-                      </button>
-                    </th>
-                    <th className="py-3 px-4 text-right">
-                      <button 
-                        onClick={() => handleSort('holdingSince')}
-                        className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
-                      >
-                        <Text size="tiny" color="muted" className="uppercase font-semibold">Held For</Text>
-                        <SortIcon field="holdingSince" />
-                      </button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedHoldings.map((holding) => {
-                    const pnl = (holding.currentPrice - holding.entryPrice) * holding.shares;
-                    const pnlPercent = (holding.currentPrice - holding.entryPrice) / holding.entryPrice;
-                    
-                    return (
-                      <tr 
-                        key={holding.symbol} 
-                        className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors"
-                      >
-                        <td className="py-3 px-4">
-                          <Text className="font-mono">{holding.symbol}</Text>
-                        </td>
-                        <td className="py-3 px-4">
-                          <Text>{holding.shares} shares</Text>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <Number value={holding.entryPrice} format="currency" />
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <Number value={holding.currentPrice} format="currency" />
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <Number value={holding.targetPrice} format="currency" color="primary" />
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <Number value={holding.stopLoss} format="currency" color="error" />
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <div className="space-y-3">
-                            <Number value={pnl} format="currency" />
-                            <div className="opacity-60">
-                              <Number value={pnlPercent} format="percent" size="default" />
+            {/* Current Holdings */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <Text size="body-lg" className="font-semibold text-emerald-400">Current Holdings</Text>
+                <button 
+                  onClick={() => setIsHoldingsExpanded(!isHoldingsExpanded)}
+                  className="text-white/60 hover:text-emerald-400 transition-colors"
+                >
+                  <svg
+                    className={`w-6 h-6 transform transition-transform ${isHoldingsExpanded ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className={`overflow-x-auto transition-all duration-300 ${isHoldingsExpanded ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="py-3 px-4 text-left">
+                        <button 
+                          onClick={() => handleSort('symbol')}
+                          className="flex items-center hover:text-emerald-400 transition-colors"
+                        >
+                          <Text size="tiny" color="muted" className="uppercase font-semibold">Symbol</Text>
+                          <SortIcon field="symbol" />
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button 
+                          onClick={() => handleSort('shares')}
+                          className="flex items-center hover:text-emerald-400 transition-colors"
+                        >
+                          <Text size="tiny" color="muted" className="uppercase font-semibold">Position</Text>
+                          <SortIcon field="shares" />
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-right">
+                        <button 
+                          onClick={() => handleSort('entryPrice')}
+                          className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
+                        >
+                          <Text size="tiny" color="muted" className="uppercase font-semibold">Entry</Text>
+                          <SortIcon field="entryPrice" />
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-right">
+                        <button 
+                          onClick={() => handleSort('currentPrice')}
+                          className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
+                        >
+                          <Text size="tiny" color="muted" className="uppercase font-semibold">Current</Text>
+                          <SortIcon field="currentPrice" />
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-right">
+                        <Text size="tiny" color="muted" className="uppercase font-semibold">Target</Text>
+                      </th>
+                      <th className="py-3 px-4 text-right">
+                        <Text size="tiny" color="muted" className="uppercase font-semibold">Stop</Text>
+                      </th>
+                      <th className="py-3 px-4 text-right">
+                        <button 
+                          onClick={() => handleSort('pnl')}
+                          className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
+                        >
+                          <Text size="tiny" color="muted" className="uppercase font-semibold">P&L</Text>
+                          <SortIcon field="pnl" />
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-right">
+                        <button 
+                          onClick={() => handleSort('holdingSince')}
+                          className="flex items-center justify-end hover:text-emerald-400 transition-colors ml-auto"
+                        >
+                          <Text size="tiny" color="muted" className="uppercase font-semibold">Held For</Text>
+                          <SortIcon field="holdingSince" />
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedHoldings.map((holding) => {
+                      const pnl = (holding.currentPrice - holding.entryPrice) * holding.shares;
+                      const pnlPercent = (holding.currentPrice - holding.entryPrice) / holding.entryPrice;
+                      
+                      return (
+                        <tr 
+                          key={holding.symbol} 
+                          className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors"
+                        >
+                          <td className="py-3 px-4">
+                            <Text className="font-mono">{holding.symbol}</Text>
+                          </td>
+                          <td className="py-3 px-4">
+                            <Text>{holding.shares} shares</Text>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <Number value={holding.entryPrice} format="currency" />
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <Number value={holding.currentPrice} format="currency" />
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <Number value={holding.targetPrice} format="currency" color="primary" />
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <Number value={holding.stopLoss} format="currency" color="error" />
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <div className="space-y-3">
+                              <Number value={pnl} format="currency" />
+                              <div className="opacity-60">
+                                <Number value={pnlPercent} format="percent" size="default" />
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <Text color="muted">{getHoldingDuration(holding.holdingSince)}</Text>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <Text color="muted">{getHoldingDuration(holding.holdingSince)}</Text>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
-
-        <div className="h-px bg-white/10" />
-
-        {/* Component Examples (for reference) */}
-        <div className="max-w-2xl space-y-12">
-          {/* Text Component Examples */}
-          <section className="space-y-6">
-            <Text size="body-lg" className="font-semibold text-emerald-400">Text Component</Text>
-            
-            <div className="space-y-4 bg-zinc-900 p-6 rounded-xl">
-              <div className="space-y-2">
-                <Text size="tiny" color="muted" className="uppercase">Sizes</Text>
-                <Text size="body-lg">Large Body Text</Text>
-                <Text>Default Body Text</Text>
-                <Text size="body-sm">Small Body Text</Text>
-                <Text size="tiny">Tiny Text</Text>
-              </div>
-
-              <div className="space-y-2">
-                <Text size="tiny" color="muted" className="uppercase">Colors</Text>
-                <Text color="default">Default Color</Text>
-                <Text color="subtle">Subtle Color</Text>
-                <Text color="muted">Muted Color</Text>
-                <Text color="primary">Primary Color</Text>
-              </div>
-            </div>
-          </section>
-
-          {/* Number Component Examples */}
-          <section className="space-y-6">
-            <Text size="body-lg" className="font-semibold text-emerald-400">Number Component</Text>
-            
-            <div className="space-y-6 bg-zinc-900 p-6 rounded-xl">
-              <div className="space-y-4">
-                <Text size="tiny" color="muted" className="uppercase">Currency Sizes</Text>
-                <div className="space-y-4">
-                  <div>
-                    <Text size="tiny" color="muted">Stat Size</Text>
-                    <Number value={47590} format="currency" size="stat" />
-                  </div>
-                  
-                  <div>
-                    <Text size="tiny" color="muted">Large Size</Text>
-                    <Number value={47590} format="currency" size="lg" />
-                  </div>
-                  
-                  <div>
-                    <Text size="tiny" color="muted">Default Size</Text>
-                    <Number value={47590} format="currency" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <Text size="tiny" color="muted" className="uppercase">Percentages</Text>
-                <div className="space-y-4">
-                  <div>
-                    <Text size="tiny" color="muted">Positive</Text>
-                    <Number value={0.0746} format="percent" />
-                  </div>
-                  
-                  <div>
-                    <Text size="tiny" color="muted">Negative</Text>
-                    <Number value={-0.0746} format="percent" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <Text size="tiny" color="muted" className="uppercase">Custom Format</Text>
-                <div>
-                  <Text size="tiny" color="muted">Plain Number</Text>
-                  <Number 
-                    value={1234567.89} 
-                    format="number" 
-                    maximumFractionDigits={0}
-                    size="lg"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
       </div>
     </main>
   );
