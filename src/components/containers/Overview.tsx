@@ -1,17 +1,17 @@
 import { Text } from '@/components/ui/typography/Text';
 import { Number } from '@/components/ui/typography/Number';
 
-interface OverviewCardProps {
+interface OverviewProps {
   availableCash: number;
   investedCapital: number;
   totalPositions: number;
 }
 
-export function OverviewCard({
+export function Overview({
   availableCash,
   investedCapital,
   totalPositions,
-}: OverviewCardProps) {
+}: OverviewProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2">
       {/* Available Cash */}
@@ -37,4 +37,4 @@ export function OverviewCard({
       </div>
     </div>
   );
-}
+} 

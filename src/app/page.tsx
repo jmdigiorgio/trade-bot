@@ -1,8 +1,8 @@
-import { OverviewCard } from '@/components/containers/OverviewCard';
-import { BotStatusCard } from '@/components/containers/BotStatusCard';
-import { PerformanceCard } from '@/components/containers/PerformanceCard';
-import { HoldingsCard } from '@/components/containers/HoldingsCard';
-import { TradingLogCard } from '@/components/containers/TradingLogCard';
+import { Overview } from '@/components/containers/Overview';
+import { Status } from '@/components/containers/Status';
+import { Performance } from '@/components/containers/Performance';
+import { Holdings } from '@/components/containers/Holdings';
+import { TradeLog } from '@/components/containers/TradeLog';
 import { Text } from '@/components/ui/typography/Text';
 
 // Mock data for holdings
@@ -144,24 +144,24 @@ export default function Home() {
                   Warren
                 </Text>
               </div>
-              <BotStatusCard
+              <Status
                 status={botStatus.status}
                 lastActive={botStatus.lastActive}
                 message={botStatus.message}
               />
             </div>
 
-            <OverviewCard
+            <Overview
               availableCash={25420.69}
               investedCapital={investedCapital}
               totalPositions={holdings.length}
             />
 
-            <PerformanceCard profitAndLoss={profitAndLoss} chartData={chartData} />
+            <Performance profitAndLoss={profitAndLoss} chartData={chartData} />
 
-            <HoldingsCard holdings={holdings} />
+            <Holdings holdings={holdings} />
 
-            <TradingLogCard logs={tradingLog} />
+            <TradeLog logs={tradingLog} />
           </div>
         </section>
       </div>

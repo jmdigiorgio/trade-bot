@@ -14,7 +14,7 @@ interface Holding {
   holdingSince: string;
 }
 
-interface HoldingsCardProps {
+interface HoldingsProps {
   holdings: Holding[];
 }
 
@@ -34,7 +34,7 @@ function getHoldingDuration(since: string): string {
   return `${days}d ${remainingHours}h`;
 }
 
-export function HoldingsCard({ holdings }: HoldingsCardProps) {
+export function Holdings({ holdings }: HoldingsProps) {
   const [sortField, setSortField] = useState<SortField>('holdingSince');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [isExpanded, setIsExpanded] = useState(true);
@@ -248,4 +248,4 @@ export function HoldingsCard({ holdings }: HoldingsCardProps) {
       </div>
     </div>
   );
-}
+} 

@@ -2,9 +2,11 @@
 
 import { Text } from '@/components/ui/typography/Text';
 import { Number } from '@/components/ui/typography/Number';
+import { DateRangeFilter } from '@/components/ui/filters/DateRangeFilter';
+import type { FilterValue } from '@/components/ui/filters/DateRangeFilter';
 import { useState } from 'react';
 
-interface TradeLog {
+interface Trade {
   timestamp: string;
   type: 'BUY' | 'SELL';
   symbol: string;
@@ -14,14 +16,14 @@ interface TradeLog {
   note: string;
 }
 
-interface TradingLogCardProps {
-  logs: TradeLog[];
+interface TradeLogProps {
+  logs: Trade[];
 }
 
-export function TradingLogCard({ logs }: TradingLogCardProps) {
+export function TradeLog({ logs }: TradeLogProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
-  const [dateFilter, setDateFilter] = useState<'24h' | '7d' | '30d' | 'all'>('all');
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<FilterValue>('24h');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
@@ -29,13 +31,13 @@ export function TradingLogCard({ logs }: TradingLogCardProps) {
     const logDate = new Date(log.timestamp);
     const now = new Date();
 
-    if (startDate && endDate) {
+    if (selectedTimeFrame === 'custom' && startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
       return logDate >= start && logDate <= end;
     }
 
-    switch (dateFilter) {
+    switch (selectedTimeFrame) {
       case '24h':
         return now.getTime() - logDate.getTime() <= 24 * 60 * 60 * 1000;
       case '7d':
@@ -59,75 +61,18 @@ export function TradingLogCard({ logs }: TradingLogCardProps) {
         <Text size="body-lg" className="font-semibold text-emerald-400">
           Trading Log
         </Text>
-        <div className="flex items-center gap-4">
-          {/* Quick filters */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setDateFilter('24h');
-                setStartDate('');
-                setEndDate('');
-              }}
-              className={`rounded px-2 py-1 text-xs ${dateFilter === '24h' ? 'bg-emerald-400/20 text-emerald-400' : 'text-white/60 hover:text-emerald-400'}`}
-            >
-              24h
-            </button>
-            <button
-              onClick={() => {
-                setDateFilter('7d');
-                setStartDate('');
-                setEndDate('');
-              }}
-              className={`rounded px-2 py-1 text-xs ${dateFilter === '7d' ? 'bg-emerald-400/20 text-emerald-400' : 'text-white/60 hover:text-emerald-400'}`}
-            >
-              7d
-            </button>
-            <button
-              onClick={() => {
-                setDateFilter('30d');
-                setStartDate('');
-                setEndDate('');
-              }}
-              className={`rounded px-2 py-1 text-xs ${dateFilter === '30d' ? 'bg-emerald-400/20 text-emerald-400' : 'text-white/60 hover:text-emerald-400'}`}
-            >
-              30d
-            </button>
-            <button
-              onClick={() => {
-                setDateFilter('all');
-                setStartDate('');
-                setEndDate('');
-              }}
-              className={`rounded px-2 py-1 text-xs ${dateFilter === 'all' ? 'bg-emerald-400/20 text-emerald-400' : 'text-white/60 hover:text-emerald-400'}`}
-            >
-              All
-            </button>
-          </div>
-
-          {/* Custom date range */}
-          <div className="flex items-center gap-2">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                setDateFilter('all');
-              }}
-              className="rounded border-0 bg-white/5 px-2 py-1 text-xs text-white/60 focus:outline-none focus:ring-1 focus:ring-emerald-400"
-            />
-            <span className="text-white/40">to</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                setDateFilter('all');
-              }}
-              className="rounded border-0 bg-white/5 px-2 py-1 text-xs text-white/60 focus:outline-none focus:ring-1 focus:ring-emerald-400"
-            />
-          </div>
-        </div>
+        <DateRangeFilter
+          value={selectedTimeFrame}
+          onFilterChange={setSelectedTimeFrame}
+          onDateChange={(start, end) => {
+            setStartDate(start);
+            setEndDate(end);
+          }}
+          startDate={startDate}
+          endDate={endDate}
+        />
       </div>
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -223,6 +168,7 @@ export function TradingLogCard({ logs }: TradingLogCardProps) {
           </tbody>
         </table>
       </div>
+
       {/* Pagination controls */}
       <div className="flex items-center justify-between border-t border-white/5 pt-4">
         <div className="flex items-center gap-2">
@@ -274,4 +220,4 @@ export function TradingLogCard({ logs }: TradingLogCardProps) {
       </div>
     </div>
   );
-}
+} 

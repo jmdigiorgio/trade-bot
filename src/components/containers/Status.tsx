@@ -2,13 +2,13 @@ import { Text } from '@/components/ui/typography/Text';
 
 type BotStatus = 'ACTIVE' | 'PAUSED' | 'ERROR' | 'MAINTENANCE';
 
-interface BotStatusCardProps {
+interface StatusProps {
   status: BotStatus;
   lastActive: string;
   message: string;
 }
 
-export function BotStatusCard({ status, lastActive, message }: BotStatusCardProps) {
+export function Status({ status, lastActive, message }: StatusProps) {
   return (
     <div className="flex items-center gap-4">
       <div className="flex flex-col items-end gap-1">
@@ -45,4 +45,4 @@ export function BotStatusCard({ status, lastActive, message }: BotStatusCardProp
       </div>
     </div>
   );
-}
+} 
