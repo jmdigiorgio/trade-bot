@@ -28,23 +28,24 @@ const colorClasses: Record<NumberColor, string> = {
   error: 'text-red-500',
 };
 
-const formatters: Record<NumberFormat, (value: number, maximumFractionDigits?: number) => string> = {
-  number: (value, maximumFractionDigits = 2) => 
-    new Intl.NumberFormat('en-US', { 
-      maximumFractionDigits 
-    }).format(value),
-  currency: (value, maximumFractionDigits = 2) => 
-    new Intl.NumberFormat('en-US', { 
-      style: 'currency', 
-      currency: 'USD',
-      maximumFractionDigits 
-    }).format(value),
-  percent: (value, maximumFractionDigits = 1) => 
-    new Intl.NumberFormat('en-US', { 
-      style: 'percent',
-      maximumFractionDigits 
-    }).format(value),
-};
+const formatters: Record<NumberFormat, (value: number, maximumFractionDigits?: number) => string> =
+  {
+    number: (value, maximumFractionDigits = 2) =>
+      new Intl.NumberFormat('en-US', {
+        maximumFractionDigits,
+      }).format(value),
+    currency: (value, maximumFractionDigits = 2) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits,
+      }).format(value),
+    percent: (value, maximumFractionDigits = 1) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'percent',
+        maximumFractionDigits,
+      }).format(value),
+  };
 
 export function Number({
   value,
@@ -56,9 +57,14 @@ export function Number({
   ...props
 }: NumberProps) {
   // For percentage and currency values, automatically set colors based on value
-  const effectiveColor = format === 'percent' || format === 'currency'
-    ? value > 0 ? 'success' : value < 0 ? 'error' : color
-    : color;
+  const effectiveColor =
+    format === 'percent' || format === 'currency'
+      ? value > 0
+        ? 'success'
+        : value < 0
+          ? 'error'
+          : color
+      : color;
 
   return (
     <span
@@ -73,4 +79,4 @@ export function Number({
       {formatters[format](value, maximumFractionDigits)}
     </span>
   );
-} 
+}

@@ -12,9 +12,9 @@ interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
 
 const sizeClasses: Record<TextSize, string> = {
   'body-lg': 'text-lg',
-  'body': 'text-base',
+  body: 'text-base',
   'body-sm': 'text-sm',
-  'tiny': 'text-xs',
+  tiny: 'text-xs',
 };
 
 const colorClasses: Record<TextColor, string> = {
@@ -24,24 +24,17 @@ const colorClasses: Record<TextColor, string> = {
   primary: 'text-emerald-400',
 };
 
-export function Text({ 
-  children, 
-  className, 
-  size = 'body', 
+export function Text({
+  children,
+  className,
+  size = 'body',
   color = 'default',
   as: Component = 'p',
-  ...props 
+  ...props
 }: TextProps) {
   return (
-    <Component
-      className={twMerge(
-        sizeClasses[size],
-        colorClasses[color],
-        className
-      )}
-      {...props}
-    >
+    <Component className={twMerge(sizeClasses[size], colorClasses[color], className)} {...props}>
       {children}
     </Component>
   );
-} 
+}

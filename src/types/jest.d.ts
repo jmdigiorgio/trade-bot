@@ -8,4 +8,4 @@ declare global {
       toHaveClass: (className: string) => R;
     }
   }
-} 
+}
