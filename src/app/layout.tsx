@@ -14,7 +14,7 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: 'Trading Bot Dashboard',
+  title: 'Warren',
   description: 'Monitor and analyze trading bot performance',
   icons: {
     icon: [
