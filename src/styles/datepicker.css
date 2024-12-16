@@ -1,0 +1,59 @@
+/* Override default react-datepicker styles */
+.react-datepicker {
+  background-color: rgb(39 39 42) !important;
+  border-color: rgb(63 63 70) !important;
+  color: white !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+  border-radius: 0.5rem !important;
+  border-width: 1px !important;
+}
+
+.react-datepicker__header {
+  background-color: rgb(24 24 27) !important;
+  border-bottom-width: 1px !important;
+  border-color: rgb(63 63 70) !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: rgb(255 255 255 / 0.6) !important;
+}
+
+.react-datepicker__day {
+  color: rgb(255 255 255 / 0.8) !important;
+  background-color: transparent !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: rgb(52 211 153 / 0.2) !important;
+  color: rgb(52 211 153) !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range,
+.react-datepicker__day--keyboard-selected {
+  background-color: rgb(52 211 153 / 0.2) !important;
+  color: rgb(52 211 153) !important;
+}
+
+.react-datepicker__day--disabled {
+  color: rgb(255 255 255 / 0.2) !important;
+}
+
+.react-datepicker__day--disabled:hover {
+  background-color: transparent !important;
+  color: rgb(255 255 255 / 0.2) !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: rgb(255 255 255 / 0.6) !important;
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: rgb(52 211 153) !important;
+}
+
+/* Position the popper element relative to the trigger */
+.react-datepicker-popper {
+  z-index: 50 !important;
+} 

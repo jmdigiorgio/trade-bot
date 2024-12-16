@@ -1,5 +1,7 @@
+'use client';
+
 import { Overview } from '@/components/containers/Overview';
-import { Status } from '@/components/containers/Status';
+import { BotStatus } from '@/components/containers/BotStatus';
 import { Performance } from '@/components/containers/Performance';
 import { Holdings } from '@/components/containers/Holdings';
 import { TradeLog } from '@/components/containers/TradeLog';
@@ -8,13 +10,13 @@ import { Text } from '@/components/ui/typography/Text';
 // Mock data for holdings
 const holdings = [
   {
-    symbol: 'AAPL',
-    shares: 100,
-    entryPrice: 175.23,
-    currentPrice: 178.9,
-    targetPrice: 185.0,
-    stopLoss: 172.5,
-    holdingSince: '2024-03-11T14:30:00Z',
+    symbol: 'NVDA',
+    shares: 25,
+    entryPrice: 890.45,
+    currentPrice: 919.13,
+    targetPrice: 950.0,
+    stopLoss: 875.0,
+    holdingSince: '2024-03-12T15:45:00Z',
   },
   {
     symbol: 'MSFT',
@@ -26,13 +28,49 @@ const holdings = [
     holdingSince: '2024-03-12T10:15:00Z',
   },
   {
-    symbol: 'NVDA',
-    shares: 25,
-    entryPrice: 890.45,
-    currentPrice: 919.13,
-    targetPrice: 950.0,
-    stopLoss: 875.0,
-    holdingSince: '2024-03-12T15:45:00Z',
+    symbol: 'AAPL',
+    shares: 100,
+    entryPrice: 175.23,
+    currentPrice: 178.90,
+    targetPrice: 185.0,
+    stopLoss: 172.5,
+    holdingSince: '2024-03-11T14:30:00Z',
+  },
+  {
+    symbol: 'GOOGL',
+    shares: 40,
+    entryPrice: 147.68,
+    currentPrice: 150.87,
+    targetPrice: 155.0,
+    stopLoss: 145.0,
+    holdingSince: '2024-03-13T09:15:00Z',
+  },
+  {
+    symbol: 'META',
+    shares: 60,
+    entryPrice: 505.85,
+    currentPrice: 514.23,
+    targetPrice: 525.0,
+    stopLoss: 495.0,
+    holdingSince: '2024-03-13T11:30:00Z',
+  },
+  {
+    symbol: 'TSLA',
+    shares: 75,
+    entryPrice: 178.25,
+    currentPrice: 175.43,
+    targetPrice: 190.0,
+    stopLoss: 170.0,
+    holdingSince: '2024-03-13T13:45:00Z',
+  },
+  {
+    symbol: 'AMD',
+    shares: 120,
+    entryPrice: 192.45,
+    currentPrice: 195.78,
+    targetPrice: 205.0,
+    stopLoss: 185.0,
+    holdingSince: '2024-03-13T14:20:00Z',
   },
 ];
 
@@ -83,87 +121,79 @@ const tradingLog = [
   },
 ];
 
-// Mock data for the performance chart
-const chartData = [
-  { date: '2024-03-07', value: 82450 },
-  { date: '2024-03-08', value: 84320 },
-  { date: '2024-03-09', value: 83150 },
-  { date: '2024-03-10', value: 85600 },
-  { date: '2024-03-11', value: 84900 },
-  { date: '2024-03-12', value: 86377 },
-  { date: '2024-03-13', value: 86377 },
-].map((item) => ({
-  ...item,
-  date: new Date(item.date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  }),
-}));
-
-// Mock P&L data for different time periods
-const profitAndLoss = {
-  today: { value: 1234.56, percentage: 0.0234 },
-  week: { value: -3456.78, percentage: -0.0456 },
-  month: { value: 12345.67, percentage: 0.1234 },
-  quarter: { value: 45678.9, percentage: 0.2345 },
-  year: { value: 123456.78, percentage: 0.3456 },
-  allTime: { value: 567890.12, percentage: 1.2345 },
-};
-
 export default function Home() {
-  // Calculate total invested capital
-  const investedCapital = holdings.reduce((total, holding) => {
-    return total + holding.shares * holding.currentPrice;
-  }, 0);
-
   return (
-    <main className="min-h-screen bg-black p-8">
-      <div className="mx-auto max-w-6xl space-y-12">
-        {/* Bot Performance Section */}
-        <section className="space-y-6">
-          <div className="space-y-6 rounded-xl bg-zinc-900 p-6">
-            <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-6 w-6 text-emerald-400"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
-                  />
-                </svg>
-                <Text
-                  size="body-lg"
-                  className="font-mono font-semibold uppercase tracking-[.25em] text-emerald-400"
-                >
-                  Warren
-                </Text>
-              </div>
-              <Status
-                status={botStatus.status}
-                lastActive={botStatus.lastActive}
-                message={botStatus.message}
+    <main className="min-h-screen bg-zinc-900 p-6 text-white">
+      <div className="mx-auto max-w-[1600px] space-y-6">
+        {/* Header with Status */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-6 w-6 text-emerald-400"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
+              />
+            </svg>
+            <Text
+              size="body-lg"
+              className="font-mono font-semibold uppercase tracking-[.25em] text-emerald-400"
+            >
+              Warren
+            </Text>
+          </div>
+          <BotStatus {...botStatus} />
+        </div>
+
+        {/* Main Grid Layout */}
+        <div className="grid gap-6 lg:grid-cols-12">
+          {/* Left Column - Overview and Performance */}
+          <div className="space-y-6 lg:col-span-6">
+            <div className="rounded-lg bg-zinc-800/50 p-6">
+              <Overview
+                availableCash={100000.00}
+                investedCapital={60040.25}
+                totalPositions={holdings.length}
               />
             </div>
-
-            <Overview
-              availableCash={25420.69}
-              investedCapital={investedCapital}
-              totalPositions={holdings.length}
-            />
-
-            <Performance profitAndLoss={profitAndLoss} chartData={chartData} />
-
-            <Holdings holdings={holdings} />
-
-            <TradeLog logs={tradingLog} />
+            <div className="relative overflow-hidden rounded-lg bg-zinc-800/50 p-6">
+              <Performance
+                profitAndLoss={{
+                  today: { value: 2500, percentage: 0.025 },
+                  week: { value: 5000, percentage: 0.05 },
+                  month: { value: 12000, percentage: 0.12 },
+                  year: { value: 50000, percentage: 0.5 },
+                  allTime: { value: 100000, percentage: 1.0 }
+                }}
+                chartData={[
+                  { date: '2024-03-01', value: 150000 },
+                  { date: '2024-03-07', value: 155000 },
+                  { date: '2024-03-14', value: 160040.25 },
+                ]}
+              />
+            </div>
           </div>
-        </section>
+
+          {/* Right Column - Holdings */}
+          <div className="lg:col-span-6">
+            <div className="rounded-lg bg-zinc-800/50 p-6 lg:h-[669px]">
+              <Holdings holdings={holdings} />
+            </div>
+          </div>
+
+          {/* Bottom Full Width - Trade Log */}
+          <div className="lg:col-span-12">
+            <div className="rounded-lg bg-zinc-800/50 p-6">
+              <TradeLog logs={tradingLog} />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
