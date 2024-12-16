@@ -2,6 +2,7 @@
 
 # project documentation
 /docs
+/scripts
 
 # dependencies
 /node_modules
