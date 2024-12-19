@@ -222,11 +222,7 @@ export default function Home() {
           {/* Left Column - Overview and Performance */}
           <div className="space-y-6 lg:col-span-6">
             <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
-              <Overview
-                availableCash={100000.00}
-                investedCapital={60040.25}
-                totalPositions={holdings.length}
-              />
+              <Overview />
             </div>
             <div className="relative overflow-hidden rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
               <Performance
