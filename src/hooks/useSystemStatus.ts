@@ -1,24 +1,28 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
-interface AccountBalance {
-  cash: number;
-  equity: number;
+interface AccountStatus {
+  status: 'ACTIVE' | 'INACTIVE';
+  trading_blocked: boolean;
+  transfers_blocked: boolean;
+  account_blocked: boolean;
+  trade_suspended_by_user: boolean;
+  shorting_enabled: boolean;
   created_at: string;
 }
 
-export function useAccount() {
-  const [balance, setBalance] = useState<AccountBalance | null>(null);
+export function useSystemStatus() {
+  const [accountStatus, setAccountStatus] = useState<AccountStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    // Function to fetch latest balance
-    async function fetchAccountData() {
+    // Function to fetch latest status
+    async function fetchSystemStatus() {
       try {
         const { data, error: fetchError } = await supabase
           .from('account_snapshot')
-          .select('cash, equity, created_at')
+          .select('status, trading_blocked, transfers_blocked, account_blocked, trade_suspended_by_user, shorting_enabled, created_at')
           .order('created_at', { ascending: false })
           .limit(1)
           .single();
@@ -29,21 +33,21 @@ export function useAccount() {
         }
 
         if (!data) {
-          setError(new Error('No account data available'));
+          setError(new Error('No status data available'));
           return;
         }
 
-        setBalance(data);
+        setAccountStatus(data);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch account data'));
+        setError(err instanceof Error ? err : new Error('Failed to fetch status data'));
       } finally {
         setLoading(false);
       }
     }
 
     // Initial fetch
-    fetchAccountData();
+    fetchSystemStatus();
 
     // Set up real-time subscription for updates
     const subscription = supabase
@@ -57,7 +61,7 @@ export function useAccount() {
         },
         (payload) => {
           if (payload.new) {
-            setBalance(payload.new as AccountBalance);
+            setAccountStatus(payload.new as AccountStatus);
             setError(null);
           }
         }
@@ -71,7 +75,15 @@ export function useAccount() {
   }, []);
 
   return {
-    balance,
+    accountStatus: accountStatus ?? {
+      status: 'ACTIVE',
+      trading_blocked: false,
+      transfers_blocked: false,
+      account_blocked: false,
+      trade_suspended_by_user: false,
+      shorting_enabled: true,
+      created_at: new Date().toISOString()
+    },
     loading,
     error
   };

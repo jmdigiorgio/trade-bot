@@ -1,3 +1,5 @@
+'use client';
+
 import { Text } from '@/components/ui/typography/Text';
 import { Status } from '@/components/ui/Status';
 import { useClock } from '@/hooks/useClock';
@@ -17,15 +19,7 @@ function getTimeUntil(targetDate: string): string {
   return `${hours}h ${minutes}m ${seconds}s`;
 }
 
-interface HeaderProps {
-  botStatus: {
-    status: 'ACTIVE' | 'INACTIVE';
-    lastActive: string;
-    message: string;
-  };
-}
-
-export function Header({ botStatus }: HeaderProps) {
+export function Header() {
   const { clock, loading, error } = useClock();
   const [countdown, setCountdown] = useState<string>("");
 
@@ -69,14 +63,6 @@ export function Header({ botStatus }: HeaderProps) {
           >
             Warren
           </Text>
-        </div>
-        <div className="pl-2">
-          <Status
-            color={botStatus.status === 'ACTIVE' ? 'green' : 'red'}
-            label={botStatus.status === 'ACTIVE' ? 'Online' : 'Offline'}
-            info={botStatus.message}
-            animate={botStatus.status === 'ACTIVE'}
-          />
         </div>
       </div>
       <div className="flex flex-col justify-center items-end gap-1">

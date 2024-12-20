@@ -96,7 +96,7 @@ export function Performance({ profitAndLoss, chartData }: PerformanceProps) {
   const currentPeriod = getCurrentPeriodData();
 
   return (
-    <div className="space-y-4">
+    <div className="flex h-full flex-col space-y-4">
       <div className="flex items-center justify-between">
         <Text size="body-lg" className="font-semibold text-emerald-400">
           Performance
@@ -114,7 +114,7 @@ export function Performance({ profitAndLoss, chartData }: PerformanceProps) {
         />
       </div>
 
-      <div className="border-t border-white/5 pt-6">
+      <div className="flex flex-1 flex-col border-t border-white/5 pt-6">
         {/* Current Period Stats */}
         <div className="mb-6 rounded-lg bg-emerald-400/20 p-4">
           <Text size="tiny" color="muted">
@@ -133,9 +133,9 @@ export function Performance({ profitAndLoss, chartData }: PerformanceProps) {
         </div>
 
         {/* Performance Chart */}
-        <div className="h-64">
+        <div className="flex-1">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
               <defs>
                 <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#47F3D0" stopOpacity={0.2} />

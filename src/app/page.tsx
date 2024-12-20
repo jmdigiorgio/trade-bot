@@ -5,6 +5,7 @@ import { Performance } from '@/components/containers/Performance';
 import { Holdings } from '@/components/containers/Holdings';
 import { TradeLog } from '@/components/containers/TradeLog';
 import { Header } from '@/components/containers/Header';
+import { SystemStatus } from '@/components/containers/SystemStatus';
 
 // Mock data for holdings
 const holdings = [
@@ -73,13 +74,6 @@ const holdings = [
   },
 ];
 
-// Mock status data
-const botStatus = {
-  status: 'ACTIVE' as const,
-  lastActive: '2024-03-13T15:58:23Z',
-  message: 'Trading normally',
-};
-
 // Mock data for trading log
 const tradingLog = [
   {
@@ -125,16 +119,25 @@ export default function Home() {
     <main className="min-h-screen bg-zinc-900 p-6 text-white">
       <div className="mx-auto max-w-[1600px] space-y-6">
         {/* Header */}
-        <Header botStatus={botStatus} />
+        <Header />
 
         {/* Main Grid Layout */}
         <div className="grid gap-6 lg:grid-cols-12">
-          {/* Left Column - Overview and Performance */}
-          <div className="space-y-6 lg:col-span-6">
+          {/* Top Row Grid */}
+          <div className="grid grid-cols-2 gap-6 lg:col-span-12">
+            {/* Overview */}
             <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
               <Overview />
             </div>
-            <div className="relative overflow-hidden rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
+            {/* System Status */}
+            <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
+              <SystemStatus />
+            </div>
+          </div>
+
+          {/* Left Column - Performance */}
+          <div className="lg:col-span-6">
+            <div className="h-[500px] relative rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 pb-12 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
               <Performance
                 profitAndLoss={{
                   today: { value: 2500, percentage: 0.025 },
@@ -154,15 +157,19 @@ export default function Home() {
 
           {/* Right Column - Holdings */}
           <div className="lg:col-span-6">
-            <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 lg:h-[669px] shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
-              <Holdings holdings={holdings} />
+            <div className="h-[500px] overflow-hidden rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
+              <div className="h-full overflow-x-auto">
+                <Holdings holdings={holdings} />
+              </div>
             </div>
           </div>
 
           {/* Bottom Full Width - Trade Log */}
           <div className="lg:col-span-12">
-            <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
-              <TradeLog logs={tradingLog} />
+            <div className="overflow-hidden rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)]">
+              <div className="overflow-x-auto">
+                <TradeLog logs={tradingLog} />
+              </div>
             </div>
           </div>
         </div>
