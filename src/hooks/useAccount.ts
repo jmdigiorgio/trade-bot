@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
-interface CashBalance {
+interface AccountBalance {
   cash: number;
+  equity: number;
   created_at: string;
 }
 
-export function useCashBalance() {
-  const [balance, setBalance] = useState<CashBalance | null>(null);
+export function useAccount() {
+  const [balance, setBalance] = useState<AccountBalance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -17,7 +18,7 @@ export function useCashBalance() {
       try {
         const { data, error } = await supabase
           .from('account_snapshot')
-          .select('cash, created_at')
+          .select('cash, equity, created_at')
           .order('created_at', { ascending: false })
           .limit(1)
           .single();
@@ -26,7 +27,7 @@ export function useCashBalance() {
         setBalance(data);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to fetch balance'));
+        setError(err instanceof Error ? err : new Error('Failed to fetch account data'));
       } finally {
         setLoading(false);
       }
@@ -46,7 +47,7 @@ export function useCashBalance() {
           table: 'account_snapshot',
         },
         (payload) => {
-          setBalance(payload.new as CashBalance);
+          setBalance(payload.new as AccountBalance);
         }
       )
       .subscribe();

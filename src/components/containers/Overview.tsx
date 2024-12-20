@@ -1,13 +1,11 @@
 import { Text } from '@/components/ui/typography/Text';
 import { Number } from '@/components/ui/typography/Number';
-import { useCashBalance } from '@/hooks/useCashBalance';
-import { useEquity } from '@/hooks/useEquity';
+import { useAccount } from '@/hooks/useAccount';
 
 export function Overview() {
-  const { balance: cashBalance, loading: cashLoading, error: cashError } = useCashBalance();
-  const { balance: equityBalance, loading: equityLoading, error: equityError } = useEquity();
+  const { balance, loading, error } = useAccount();
 
-  if (cashLoading || equityLoading) {
+  if (loading) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2 animate-pulse">
@@ -24,7 +22,7 @@ export function Overview() {
     );
   }
 
-  if (cashError || equityError) {
+  if (error) {
     return (
       <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
         <Text color="primary" className="text-red-500">Failed to load account data</Text>
@@ -32,7 +30,7 @@ export function Overview() {
     );
   }
 
-  if (!cashBalance || !equityBalance) {
+  if (!balance) {
     return (
       <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
         <Text color="primary" className="text-yellow-500">No balance data available</Text>
@@ -48,9 +46,9 @@ export function Overview() {
           <Text size="tiny" color="muted" className="uppercase">
             Cash
           </Text>
-          <Number value={cashBalance.cash} format="currency" size="stat" />
+          <Number value={balance.cash} format="currency" size="stat" />
           <Text size="tiny" color="subtle">
-            As of {new Date(cashBalance.created_at).toLocaleString()}
+            As of {new Date(balance.created_at).toLocaleString()}
           </Text>
         </div>
 
@@ -59,9 +57,9 @@ export function Overview() {
           <Text size="tiny" color="muted" className="uppercase">
             Portfolio
           </Text>
-          <Number value={equityBalance.equity} format="currency" size="stat" />
+          <Number value={balance.equity} format="currency" size="stat" />
           <Text size="tiny" color="subtle">
-            As of {new Date(equityBalance.created_at).toLocaleString()}
+            As of {new Date(balance.created_at).toLocaleString()}
           </Text>
         </div>
       </div>
