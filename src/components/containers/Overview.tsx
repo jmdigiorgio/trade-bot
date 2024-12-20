@@ -1,11 +1,13 @@
 import { Text } from '@/components/ui/typography/Text';
 import { Number } from '@/components/ui/typography/Number';
-import { useAccountBalance } from '@/hooks/useAccountBalance';
+import { useCashBalance } from '@/hooks/useCashBalance';
+import { useEquity } from '@/hooks/useEquity';
 
 export function Overview() {
-  const { balance, loading, error } = useAccountBalance();
+  const { balance: cashBalance, loading: cashLoading, error: cashError } = useCashBalance();
+  const { balance: equityBalance, loading: equityLoading, error: equityError } = useEquity();
 
-  if (loading) {
+  if (cashLoading || equityLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2 animate-pulse">
@@ -22,15 +24,15 @@ export function Overview() {
     );
   }
 
-  if (error) {
+  if (cashError || equityError) {
     return (
       <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-        <Text color="primary" className="text-red-500">Failed to load account balance</Text>
+        <Text color="primary" className="text-red-500">Failed to load account data</Text>
       </div>
     );
   }
 
-  if (!balance) {
+  if (!cashBalance || !equityBalance) {
     return (
       <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
         <Text color="primary" className="text-yellow-500">No balance data available</Text>
@@ -41,30 +43,30 @@ export function Overview() {
   return (
     <div className="space-y-2">
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Available Cash */}
+        {/* Cash Balance */}
         <div className="space-y-2">
           <Text size="tiny" color="muted" className="uppercase">
             Cash
           </Text>
-          <Number value={balance.cash} format="currency" size="stat" />
+          <Number value={cashBalance.cash} format="currency" size="stat" />
           <Text size="tiny" color="subtle">
-            As of {new Date(balance.created_at).toLocaleString()}
+            As of {new Date(cashBalance.created_at).toLocaleString()}
           </Text>
         </div>
 
-        {/* Portfolio Value */}
+        {/* Portfolio Value (Equity) */}
         <div className="space-y-2">
           <Text size="tiny" color="muted" className="uppercase">
             Portfolio
           </Text>
-          <Number value={balance.portfolio_value} format="currency" size="stat" />
+          <Number value={equityBalance.equity} format="currency" size="stat" />
           <Text size="tiny" color="subtle">
-            As of {new Date(balance.created_at).toLocaleString()}
+            As of {new Date(equityBalance.created_at).toLocaleString()}
           </Text>
         </div>
       </div>
       <Text size="tiny" color="muted" className="italic">
-        Account balances are only updated during market hours.
+        Account values are only updated during active trading hours.
       </Text>
     </div>
   );
