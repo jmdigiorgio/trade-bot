@@ -9,8 +9,6 @@ interface Holding {
   shares: number;
   entryPrice: number;
   currentPrice: number;
-  targetPrice: number;
-  stopLoss: number;
   holdingSince: string;
 }
 
@@ -131,7 +129,7 @@ export function Holdings({ holdings }: HoldingsProps) {
                     className="flex items-center transition-colors hover:text-emerald-400"
                   >
                     <Text size="tiny" color="muted" className="font-semibold uppercase">
-                      Entry
+                      Average
                     </Text>
                     <SortIcon field="entryPrice" />
                   </button>
@@ -146,16 +144,6 @@ export function Holdings({ holdings }: HoldingsProps) {
                     </Text>
                     <SortIcon field="currentPrice" />
                   </button>
-                </th>
-                <th className="px-4 py-3 text-left">
-                  <Text size="tiny" color="muted" className="font-semibold uppercase">
-                    Target
-                  </Text>
-                </th>
-                <th className="px-4 py-3 text-left">
-                  <Text size="tiny" color="muted" className="font-semibold uppercase">
-                    Stop
-                  </Text>
                 </th>
                 <th className="px-4 py-3 text-left">
                   <button
@@ -204,12 +192,6 @@ export function Holdings({ holdings }: HoldingsProps) {
                     </td>
                     <td className="px-4 py-3">
                       <Number value={holding.currentPrice} format="currency" />
-                    </td>
-                    <td className="px-4 py-3">
-                      <Number value={holding.targetPrice} format="currency" color="primary" />
-                    </td>
-                    <td className="px-4 py-3">
-                      <Number value={holding.stopLoss} format="currency" color="error" />
                     </td>
                     <td className="px-4 py-3">
                       <div>
