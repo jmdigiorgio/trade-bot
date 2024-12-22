@@ -18,16 +18,16 @@ interface ContainerProps {
 
 export function Container({ header, children, footer, grid = false, columns = 3 }: ContainerProps) {
   return (
-    <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)] overflow-hidden">
+    <div className="rounded-lg bg-gradient-to-b from-zinc-800/50 to-zinc-800/30 p-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)] overflow-hidden flex flex-col h-full">
       {/* Header Section */}
       {header && (
-        <div className="mb-6">
+        <div className="mb-6 flex-none">
           {header}
         </div>
       )}
 
       {/* Body Section */}
-      <div className={`min-h-0 flex-1 ${
+      <div className={`flex-1 ${
         grid 
           ? `grid gap-6 grid-cols-1 ${
               columns === 2 ? 'md:grid-cols-2' : 
@@ -41,7 +41,7 @@ export function Container({ header, children, footer, grid = false, columns = 3 
 
       {/* Footer Section */}
       {footer && (
-        <div className="mt-6 border-t border-white/10 pt-4">
+        <div className="mt-6 border-t border-white/10 pt-4 flex-none">
           {footer}
         </div>
       )}
