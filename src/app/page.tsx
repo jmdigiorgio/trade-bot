@@ -3,13 +3,13 @@
 import { Text } from '@/components/ui/typography/Text';
 import { Number } from '@/components/ui/typography/Number';
 import { Performance } from '@/components/containers/Performance';
-import { Holdings } from '@/components/containers/Holdings';
 import { TradeLog } from '@/components/containers/TradeLog';
 import { Header } from '@/components/containers/Header';
 import { Status } from '@/components/ui/Status';
 import { Container } from '@/components/ui/containers/Container';
 import { useAccount } from '@/hooks/useAccount';
 import { useSystemStatus } from '@/hooks/useSystemStatus';
+import { usePositions } from '@/hooks/usePositions';
 import { useState, useEffect } from 'react';
 
 function formatDate(dateString: string) {
@@ -24,59 +24,6 @@ function formatDate(dateString: string) {
     hour12: true,
   });
 }
-
-// Mock data for holdings
-const holdings = [
-  {
-    symbol: 'NVDA',
-    shares: 25,
-    entryPrice: 890.45,
-    currentPrice: 919.13,
-    holdingSince: '2024-03-12T15:45:00Z',
-  },
-  {
-    symbol: 'MSFT',
-    shares: 50,
-    entryPrice: 405.12,
-    currentPrice: 401.78,
-    holdingSince: '2024-03-12T10:15:00Z',
-  },
-  {
-    symbol: 'AAPL',
-    shares: 100,
-    entryPrice: 175.23,
-    currentPrice: 178.90,
-    holdingSince: '2024-03-11T14:30:00Z',
-  },
-  {
-    symbol: 'GOOGL',
-    shares: 40,
-    entryPrice: 147.68,
-    currentPrice: 150.87,
-    holdingSince: '2024-03-13T09:15:00Z',
-  },
-  {
-    symbol: 'META',
-    shares: 60,
-    entryPrice: 505.85,
-    currentPrice: 514.23,
-    holdingSince: '2024-03-13T11:30:00Z',
-  },
-  {
-    symbol: 'TSLA',
-    shares: 75,
-    entryPrice: 178.25,
-    currentPrice: 175.43,
-    holdingSince: '2024-03-13T13:45:00Z',
-  },
-  {
-    symbol: 'AMD',
-    shares: 120,
-    entryPrice: 192.45,
-    currentPrice: 195.78,
-    holdingSince: '2024-03-13T14:20:00Z',
-  },
-];
 
 // Mock data for trading log
 const tradingLog = [
@@ -121,6 +68,7 @@ const tradingLog = [
 export default function Home() {
   const { balance, loading, error } = useAccount();
   const { accountStatus } = useSystemStatus();
+  const { positions, loading: positionsLoading, error: positionsError } = usePositions();
   const [formattedDate, setFormattedDate] = useState<string>('');
 
   useEffect(() => {
@@ -274,8 +222,117 @@ export default function Home() {
             </Container>
           </div>
 
+          {/* Positions Row */}
+          <div className="grid grid-cols-1">
+            {/* Positions */}
+            <Container
+              header={
+                <Text size="body-lg" className="font-semibold text-gray-400">
+                  Current Positions
+                </Text>
+              }
+              footer={
+                <Text size="tiny" color="muted" className="italic opacity-60">
+                  Last updated: {positions?.[0]?.created_at ? formatDate(positions[0].created_at) : 'Never'}
+                </Text>
+              }
+            >
+              {positionsLoading ? (
+                <div className="space-y-4 animate-pulse">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="flex justify-between items-center border-b border-white/5 pb-4 last:border-0">
+                      <div className="space-y-2">
+                        <div className="h-4 w-16 bg-white/10 rounded" />
+                        <div className="h-6 w-24 bg-white/10 rounded" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-4 w-20 bg-white/10 rounded" />
+                        <div className="h-6 w-32 bg-white/10 rounded" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : positionsError ? (
+                <Text color="primary" className="text-red-500">Failed to load positions</Text>
+              ) : positions?.length === 0 ? (
+                <Text color="muted">No active positions</Text>
+              ) : (
+                <div className="min-h-0 flex-1 overflow-hidden border-t border-white/5 pt-6">
+                  <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-zinc-800 scrollbar-thumb-zinc-700">
+                    <table className="w-full">
+                      <thead className="sticky top-0 z-10 bg-zinc-800/50">
+                        <tr className="border-b border-white/10">
+                          <th className="px-4 py-3 text-left">
+                            <Text size="tiny" color="muted" className="font-semibold uppercase">
+                              Symbol
+                            </Text>
+                          </th>
+                          <th className="px-4 py-3 text-left">
+                            <Text size="tiny" color="muted" className="font-semibold uppercase">
+                              Shares
+                            </Text>
+                          </th>
+                          <th className="px-4 py-3 text-left">
+                            <Text size="tiny" color="muted" className="font-semibold uppercase">
+                              Average
+                            </Text>
+                          </th>
+                          <th className="px-4 py-3 text-left">
+                            <Text size="tiny" color="muted" className="font-semibold uppercase">
+                              Current
+                            </Text>
+                          </th>
+                          <th className="px-4 py-3 text-left">
+                            <Text size="tiny" color="muted" className="font-semibold uppercase">
+                              P&L
+                            </Text>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {positions.map((position) => {
+                          const pnlValue = (position.current_price - position.cost_basis) * position.qty;
+                          
+                          return (
+                            <tr
+                              key={position.symbol}
+                              className="border-b border-white/5 transition-colors last:border-0 hover:bg-white/5"
+                            >
+                              <td className="px-4 py-3">
+                                <Text as="span" className="font-mono">
+                                  {position.symbol}
+                                </Text>
+                              </td>
+                              <td className="px-4 py-3">
+                                <Text as="span">{position.qty}</Text>
+                              </td>
+                              <td className="px-4 py-3">
+                                <Number value={position.cost_basis} format="currency" />
+                              </td>
+                              <td className="px-4 py-3">
+                                <Number value={position.current_price} format="currency" />
+                              </td>
+                              <td className="px-4 py-3">
+                                <div>
+                                  <Number value={pnlValue} format="currency" className={pnlValue >= 0 ? 'text-emerald-400' : 'text-red-500'} />
+                                  <div className="opacity-60">
+                                    <Number value={position.unrealized_plpc} format="percent" size="default" className={position.unrealized_plpc >= 0 ? 'text-emerald-400' : 'text-red-500'} />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </Container>
+          </div>
+
           {/* Performance and Holdings Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {/* Left Column - Performance */}
             <Container>
               <div className="h-[500px] relative">
@@ -293,15 +350,6 @@ export default function Home() {
                     { date: '2024-03-14', value: 160040.25 },
                   ]}
                 />
-              </div>
-            </Container>
-
-            {/* Right Column - Holdings */}
-            <Container>
-              <div className="h-[500px] overflow-hidden">
-                <div className="h-full overflow-x-auto">
-                  <Holdings holdings={holdings} />
-                </div>
               </div>
             </Container>
           </div>
